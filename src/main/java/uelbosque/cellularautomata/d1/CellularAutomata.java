@@ -3,6 +3,7 @@ package uelbosque.cellularautomata.d1;
 import java.io.IOException;
 import java.util.ArrayList;
 import uelbosque.cellularautomata.d1.params.Constants;
+import uelbosque.cellularautomata.d1.params.Constants.RULE_LOADER_MODE;
 import uelbosque.cellularautomata.d1.util.MyFileManager;
 
 /**
@@ -17,16 +18,27 @@ public class CellularAutomata {
     /**
      * Validador de reglas del autómata
      */
-    private final RuleValidator ruleValidator;
+    private final RuleManager ruleValidator;
     
     /**
-     * Constructor por defecto del autómata celular
+     * Constructor por defecto del autómata celular que carga reglas de un archivo
      * @throws IOException Posible error el cargar las reglas del autómata
      */
     public CellularAutomata() throws IOException {
         //Instancia el espacio de celdas de acuerdo al tamaño definido
         cellSpace = new CellSpace(Constants.SPACE_SIZE);
-        ruleValidator = new RuleValidator();
+        ruleValidator = new RuleManager();
+    }
+    
+    /**
+     * Constructor por parámetro del autómata celular a partir de un número de regla de Wolfram
+     * @param wolframRuleNumber Número de la regla de Wolfram a cargar (de 0 a 255)
+     * @throws IOException Posible error el cargar las reglas del autómata
+     */
+    public CellularAutomata(int wolframRuleNumber) throws IOException {
+        //Instancia el espacio de celdas de acuerdo al tamaño definido
+        cellSpace = new CellSpace(Constants.SPACE_SIZE);
+        ruleValidator = new RuleManager(wolframRuleNumber);
     }
     
     /**

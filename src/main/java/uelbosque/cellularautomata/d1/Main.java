@@ -6,6 +6,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uelbosque.cellularautomata.d1.params.Constants;
 import uelbosque.cellularautomata.d1.ui.ElementalAutomataPanel;
+import uelbosque.cellularautomata.d1.util.BinaryConverter;
 import uelbosque.cellularautomata.d1.util.Console;
 
 /**
@@ -37,7 +38,14 @@ public class Main {
          * Instanciación de autómata celular 
          */
         try{
-            cellularAutomata = new CellularAutomata();
+            if(Constants.DEFAULT_RULE_LOADER_MODE == Constants.RULE_LOADER_MODE.FILE)
+                //Crea el autómata celular desde un archivo
+                cellularAutomata = new CellularAutomata();
+            else{
+                //Crea el autómata celular solitando un número de regla de Wolfram por teclado
+                int wolframRuleNumber = Console.captureNumber("Por favor indique el número de la regla de Wolfram a simular. Debe ser un valor entre 0 y 255:", 0, 255);
+                cellularAutomata = new CellularAutomata(wolframRuleNumber);
+            }
         }
         catch(IOException ex){
             Console.log("Error al tratar de acceder y leer el archivo de reglas");
@@ -71,7 +79,8 @@ public class Main {
             Console.log(ex.getMessage());
             System.exit(0);
         }
-
+        
+        int evolutionCounter = Console.captureNumber("Por favor indique el número de evoluciones del autómata. Debe ser un valor entre 1 y 61 por restricción de espacio físico en la pantalla:", 1, 61);;
         /**
          * Llama método de configuración de interfaz gráfica para presentar el autómata celular
          */
@@ -81,7 +90,7 @@ public class Main {
          * Corre de manera indefinida el autómata celular con cambios de estado cada segundo
          */
         try{
-            run();
+            run(evolutionCounter);
         }
         catch(InterruptedException ex){
             Console.log("Falla en la activación de sleep en el hilo principal del programa");
@@ -112,10 +121,11 @@ public class Main {
     
     /**
      * Método que realiza el cambio de estado del autómata cada segundo
+     * @param evolutionCounter Número de evoluciones del autómata
      * @throws InterruptedException Excepción por falla en detención de hilo principal
      */
-    public static void run() throws InterruptedException{
-        while(true){
+    public static void run(int evolutionCounter) throws InterruptedException{
+        for(int i=1; i<=evolutionCounter; i++){
             Thread.sleep(100);
             cellularAutomata.runToNextState();
             automataPanel.addNewGraphStateLine(cellularAutomata.getCellSpace().getCells().clone());

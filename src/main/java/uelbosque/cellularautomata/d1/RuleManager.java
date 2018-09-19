@@ -2,13 +2,14 @@ package uelbosque.cellularautomata.d1;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import uelbosque.cellularautomata.d1.util.BinaryConverter;
 import uelbosque.cellularautomata.d1.util.MyFileManager;
 
 /**
  * Validador genérico de reglas para ACU
  * @author Jorge Gantiva Ochoa
  */
-public class RuleValidator {
+public class RuleManager {
     /**
      * Listado de reglas del autómata
      */
@@ -18,9 +19,30 @@ public class RuleValidator {
      * Constructor por defecto del validador de reglas
      * @throws IOException Posible error al leer el archivo de reglas
      */
-    public RuleValidator() throws IOException {
+    public RuleManager() throws IOException {
         //Carga las reglas del autómata
-        loadRules();
+        loadRulesFromFile();
+    }
+    
+    /**
+     * Constructor por defecto del validador de reglas
+     * @param wolframRuleNumber Número de la regla de Wolfram a cargar (de 0 a 255)
+     * @throws IOException Posible error al leer el archivo de reglas
+     */
+    public RuleManager(int wolframRuleNumber) throws IOException {
+        ruleList = new ArrayList<>();
+        int[] binaryWolframNumber = BinaryConverter.convertDecimalToBinaryArray(wolframRuleNumber, 8);
+        
+        for(int i=0; i<binaryWolframNumber.length; i++){
+            int[] binaryWolframCellConfig = BinaryConverter.convertDecimalToBinaryArray(i, 3);
+            
+            ruleList.add(new WolframRule(
+                    binaryWolframCellConfig[2], 
+                    binaryWolframCellConfig[1], 
+                    binaryWolframCellConfig[0],
+                    binaryWolframNumber[i]
+            ));
+        }
     }
     
     /**
@@ -29,7 +51,7 @@ public class RuleValidator {
      * @throws IndexOutOfBoundsException Posible error de índices al leer el archivo de reglas
      * @throws NumberFormatException Posible error en el formato del archivo de reglas
      */
-    private void loadRules() throws IOException, IndexOutOfBoundsException, NumberFormatException{
+    private void loadRulesFromFile() throws IOException, IndexOutOfBoundsException, NumberFormatException{
         ruleList = new ArrayList<>();
         
         //Carga reglas del autómata desde un archivo

@@ -1,5 +1,7 @@
 package uelbosque.cellularautomata.d1.util;
 
+import java.util.Scanner;
+
 /**
  * Clase genérica para imprimir por consola
  * @author Jorge Gantiva Ochoa
@@ -19,5 +21,22 @@ public class Console {
      */
     public static void logAppend(String message){
         System.out.print(message);
+    }
+    
+    /**
+     * Solicita capturar por teclado un número entre un rango
+     * @param message Mensaje del número a capturar
+     * @param min Valor mínimo permitido a capturar
+     * @param max Valor máximo permitido a capturar
+     * @return Valor capturado por teclado que se encuentra dentro del rango señalado
+     */
+    public static int captureNumber(String message, int min, int max){
+        Scanner scanner = new Scanner(System.in);
+        int n = min - 1;
+        while(n<min || n>max) {
+            log(message);
+            n = scanner.nextInt();
+        }
+        return n;
     }
 }
